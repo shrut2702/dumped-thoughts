@@ -7,9 +7,9 @@
 
 @import "minima";
 html body {
-  font-family: "Sudo", monospace;
-  font-size: 17px;
-  line-height: 1.5;
+  font-family: monospace, "Sudo";
+  font-size: 18px;
+  line-height: 1.7;
   color: #c9cacc;
   background-color: #1d1f21;
 }
@@ -31,9 +31,9 @@ pre {
   font-size: 14px;
 }
 
-.post-list-heading {
+/* .post-list-heading {
   margin-top: 15px;
-}
+} */
 
 a.site-title {
   color: #c9cacc;
