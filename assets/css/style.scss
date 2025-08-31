@@ -6,27 +6,3 @@
   "minima/initialize"; */
 
 @import "minima";
-
-html body {
-  font-family: "Sudo", monospace;
-  font-size: 17px;
-  line-height: 1.7;
-  color: #222;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Merriweather", Georgia, serif;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-code,
-pre {
-  font-family: "Fira Code", monospace;
-  font-size: 14px;
-}
