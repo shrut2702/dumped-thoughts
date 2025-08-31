@@ -5,4 +5,4 @@
 /* @import "minima/skins/{{ site.minima.skin | default: 'classic' }}",
   "minima/initialize"; */
 
-@import "minima";
+@import "minima", "minima/initialize";
