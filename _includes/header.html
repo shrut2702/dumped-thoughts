@@ -4,7 +4,7 @@
     page_paths = site.minima.nav_pages | default: default_paths -%} {%- assign
     page_titles = site.pages | map: 'title' | compact %}
     <a class="site-title" rel="author" href="{{ '/' | relative_url }}"
-      ><b>{{ site.title | escape }}</b></a
+      ><h1>{{ site.title | escape }}</h1></a
     >
 
     {%- unless page_titles == empty %}
