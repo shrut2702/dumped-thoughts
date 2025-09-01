@@ -95,4 +95,6 @@ Probability distribution with temperature = 5 and top-k = 3
 tensor([[0.3036, 0.0000, 0.0000, 0.0000, 0.3311, 0.3653, 0.0000]])
 ```
 
-Here, the probability of every token other than 0,4 and 5 is 0, meaning the output will be sampled from only these three tokens.
+Here, the probability of every token other than 0,4 and 5 is 0, meaning the output will be sampled from only these three tokens. Consequently, the generated text will be more coherent and non-redundant.
+
+Depending on the use-case, we can tune these parameters to get desired output. For example, if we want to generate a poem or story, we can set temperature to a high value like 3 and top-k to 50. But if we want to generate a technical document or article, we can set temperature to a low value like 0.5 and top-k to 10.
