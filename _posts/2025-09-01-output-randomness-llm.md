@@ -2,7 +2,7 @@
 layout: post
 title: "Understanding Temperature and Top-K in Large Language Models"
 date: 2025-09-01
-excerpt: "First attempt at blogging my learnings and projects."
+excerpt: "What if every time we query the LLM a prompt, it responds with the same output?"
 ---
 
 What if every time we query the LLM a prompt, it responds with the same output? It would sound mundane and redundant. It would always generate same set of tokens, the tokens which has highest probability computed by the model. The task of a transformer-based LLM is to generate probability distribution for the vocabulary (set of all tokens/words known to a LLM) based on input sequence, from which it will predict next-word that is most related to input sequence or has the highest probability. This means for same input sequence, the LLM will generate exact same next-word.
@@ -65,4 +65,34 @@ tomorrow: 351
 never: 42
 ```
 
-<!--more-->
+We can control this probability distribution to be more uniform or spiked with the help of temperature parameter. To do that we divide the logits by temperature before we apply softmax function. By default, the temperature value is set to 1, as dividing the logits by 1 would result into same values. If the temperature is less than 1, the logits will increase than the original values. And since the softmax is an exponential function, even the slight increase in the input to it can lead to huge differences in probability, and thus, making high values higher and low values lower. Therefore, the sampling probability also increases considerably, resulting almost constant token when temperature is less than 1.
+
+Probability distribution with temperature = 0.2
+
+```output
+tensor([[8.8888e-03, 1.8364e-03, 7.0796e-07, 1.2294e-03, 7.7659e-02, 9.1036e-01, 2.7703e-05]])
+```
+
+See how spiked the distribution is, the earlier high values are even higher now and low values are almost 0.
+
+On the other hand, when the temperature increases, the resulting logits decreases, thus, softmax function will return nearly uniform distribution. Therefore, each token in the vocabulary has almost similar chances of getting picked, resulting into varying and creative output. But this also means generating text which doesn't make any sense, because each token, whether relevant or not, has similar probability.
+
+Probability distribution with temperature = 5
+
+```output
+tensor([[0.1507, 0.1415, 0.1033, 0.1392, 0.1643, 0.1813, 0.1196]])
+```
+
+As can be seen above, every token has nearly equal probabilities, this might lead to incoherent text generation.
+
+![Alt text]({{ site.baseurl }}/assets/images/temp_prob_dist.png)
+
+To overcome this drawback, the top-k parameter comes in handy. It limits the token sampling from the output probability distribution to the top 'k' values, i.e., if k=10, only indices with top 10 highest probabilities across the output will be considered. This ensures the top 10 most relevant tokens will the output be sampled from, generating coherent text even with the high temperature value.
+
+Probability distribution with temperature = 5 and top-k = 3
+
+```output
+tensor([[0.3036, 0.0000, 0.0000, 0.0000, 0.3311, 0.3653, 0.0000]])
+```
+
+Here, the probability of every token other than 0,4 and 5 is 0, meaning the output will be sampled from only these three tokens.

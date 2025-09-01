@@ -21,7 +21,7 @@ layout: base
           {{ post.title | escape }}
         </a>
       </h3>
-      {%- if site.show_excerpts -%} {{ post.excerpt | strip_html | truncate: 50
+      {%- if site.show_excerpts -%} {{ post.excerpt | strip_html | truncate: 70
       }} {%- endif -%}
     </li>
     {%- endfor -%}
