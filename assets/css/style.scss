@@ -30,8 +30,8 @@ pre {
   font-family: "Fira Code", monospace;
   font-size: 14px;
   color: #c9cacc;
-  background-color: #191a1c;
-  border-color: #141516;
+  background-color: #0c1932;
+  border-color: #0b1a29;
   border-radius: 5px;
 }
 
@@ -49,4 +49,11 @@ a.post-link {
 
 a.post-link:hover {
   color: #209069;
+}
+
+img {
+  display: block;
+  margin: 1em auto; // centers images
+  max-width: 100%;
+  height: auto;
 }
