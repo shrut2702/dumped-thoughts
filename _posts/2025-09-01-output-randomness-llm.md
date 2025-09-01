@@ -32,12 +32,37 @@ input: tensor([[0, 1, 2, 3]])
 output: tensor([[[-1.1126,  0.1530,  0.6608, -0.7732, -0.3803, -1.1147,  1.4993], # logits of 'the
                  [-1.3186,  0.9240, -0.3326, -0.4618, -2.4549, -1.5394,  0.8870], # logits of 'weather'
                  [ 1.2215, -0.8649,  1.7561,  1.9612,  0.7086, -0.9581, -0.0143], # logits of 'is'
-                 [-1.1442, -0.7637, -0.2789,  1.5958, -0.8117,  0.1906,  1.8612]]])  # logits of 'good' <------- WE WILL ONLY FOCUS ON THIS
+                 [ 0.3271,  0.0117, -1.5605, -0.0686,  0.7606,  1.2529, -0.8271]]])  # logits of 'good' <------- WE WILL ONLY FOCUS ON THIS
 # shape (batch_size, num_tokens, vocab_size)
 ```
 
 Usually, we select the index with the highest probability after applying softmax to last logits. This index corresponds to token_id in the vocabulary, which is our next token/word.
 
 However, to achieve randomness in the output instead of selecting token_id based on the highest probability, we will sample token_id proportional to its probability.
+
+Probability distribution after applying softmax to last logits:
+
+```code
+last_logits = logits[:,-1,:]
+softmax_prob = torch.softmax(last_logits, dim=-1)
+```
+
+output:
+
+```output
+tensor([[0.1442, 0.1052, 0.0218, 0.0971, 0.2224, 0.3639, 0.0455]])
+```
+
+Earlier, the output would be always "tomorrow" (token_id 5). Now, if we sample from the output 1000 times then we get following distribution:
+
+```output
+the: 147
+weather: 110
+is: 23
+good: 83
+today: 244
+tomorrow: 351
+never: 42
+```
 
 <!--more-->
