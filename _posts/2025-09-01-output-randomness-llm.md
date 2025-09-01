@@ -65,9 +65,20 @@ tomorrow: 351
 never: 42
 ```
 
-We can control this probability distribution to be more uniform or spiked with the help of temperature parameter. To do that we divide the logits by temperature before we apply softmax function. By default, the temperature value is set to 1, as dividing the logits by 1 would result into same values. If the temperature is less than 1, the logits will increase than the original values. And since the softmax is an exponential function, even the slight increase in the input to it can lead to huge differences in probability, and thus, making high values higher and low values lower. Therefore, the sampling probability also increases considerably, resulting almost constant token when temperature is less than 1.
+We can control this probability distribution to be more uniform or spiked with the help of temperature parameter. To do that, we divide the logits by temperature before we apply softmax function. By default, the temperature value is set to 1, as dividing the logits by 1 would result into same values. If the temperature is less than 1, the logits will increase than the original values. And since the softmax is an exponential function, even the slight increase in the input to it can lead to huge differences in probability, and thus, making high values higher and low values lower. Therefore, the sampling probability also increases considerably, resulting almost constant token when temperature is less than 1.
 
 Probability distribution with temperature = 0.2
+
+```code
+def temp_scaled_softmax(logits, temp=1):
+  scaled_values = logits/temp
+  prob = torch.softmax(scaled_values, dim=-1)
+  return prob
+
+temp_scaled_softmax(last_logits, temp=0.2)
+```
+
+output:
 
 ```output
 tensor([[8.8888e-03, 1.8364e-03, 7.0796e-07, 1.2294e-03, 7.7659e-02, 9.1036e-01, 2.7703e-05]])
@@ -78,6 +89,12 @@ See how spiked the distribution is, the earlier high values are even higher now 
 On the other hand, when the temperature increases, the resulting logits decreases, thus, softmax function will return nearly uniform distribution. Therefore, each token in the vocabulary has almost similar chances of getting picked, resulting into varying and creative output. But this also means generating text which doesn't make any sense, because each token, whether relevant or not, has similar probability.
 
 Probability distribution with temperature = 5
+
+```code
+temp_scaled_softmax(last_logits, temp=5)
+```
+
+output:
 
 ```output
 tensor([[0.1507, 0.1415, 0.1033, 0.1392, 0.1643, 0.1813, 0.1196]])
@@ -90,6 +107,20 @@ As can be seen above, every token has nearly equal probabilities, this might lea
 To overcome this drawback, the top-k parameter comes in handy. It limits the token sampling from the output probability distribution to the top 'k' values, i.e., if k=10, only indices with top 10 highest probabilities across the output will be considered. This ensures the top 10 most relevant tokens will the output be sampled from, generating coherent text even with the high temperature value.
 
 Probability distribution with temperature = 5 and top-k = 3
+
+```code
+top_k=3
+top_logits, top_idx = torch.topk(last_logits.squeeze(0), top_k)
+masked_logits = torch.where(
+    condition = last_logits < top_logits[-1],
+    input = torch.tensor(float('-inf')),
+    other = last_logits
+)
+
+temp_scaled_softmax(masked_logits, temp=5)
+```
+
+output:
 
 ```output
 tensor([[0.3036, 0.0000, 0.0000, 0.0000, 0.3311, 0.3653, 0.0000]])
